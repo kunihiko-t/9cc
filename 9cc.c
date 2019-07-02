@@ -321,6 +321,37 @@ void gen(Node *node) {
         case ND_DIV:
             printf("  cqo\n");
             printf("  idiv rdi\n");
+            break;
+        case ND_EQUAL:
+            printf("  cmp rax, rdi\n");
+            printf("  sete al\n");
+            printf("  movzb rax, al\n");
+            break;
+        case ND_NOT_EQUAL:
+            printf("  cmp rax, rdi\n");
+            printf("  setne al\n");
+            printf("  movzb rax, al\n");
+            break;
+        case ND_LESS_THAN:
+            printf("  cmp rax, rdi\n");
+            printf("  setl al\n");
+            printf("  movzb rax, al\n");
+            break;
+        case ND_LESS_THAN_EQUAL:
+            printf("  cmp rax, rdi\n");
+            printf("  setle al\n");
+            printf("  movzb rax, al\n");
+            break;
+        case ND_GREATER_THAN:
+            printf("  cmp rdi, rax\n");
+            printf("  setl al\n");
+            printf("  movzb rax, al\n");
+            break;
+        case ND_GREATER_THAN_EQUAL:
+            printf("  cmp rdi, rax\n");
+            printf("  setle al\n");
+            printf("  movzb rax, al\n");
+            break;
     }
 
     printf("  push rax\n");

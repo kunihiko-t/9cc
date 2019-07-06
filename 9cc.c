@@ -10,6 +10,7 @@ int main(int argc, char **argv) {
     }
     // トークナイズしてパースする
     user_input = argv[1];
+    fprintf(stderr, "--- %s ---", user_input);
     tokenize(user_input);
 
     program();

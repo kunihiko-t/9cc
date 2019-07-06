@@ -8,10 +8,18 @@ int main(int argc, char **argv) {
         fprintf(stderr, "引数の個数が正しくありません\n");
         return 1;
     }
+    locals = calloc(1, sizeof(LVar));
     // トークナイズしてパースする
     user_input = argv[1];
-    fprintf(stderr, "--- %s ---", user_input);
+    fprintf(stderr, "input: %s \n", user_input);
     tokenize(user_input);
+    Token* t = token;
+    for(;;){
+        fprintf(stderr, "tokenized:: %s, %d \n", t->str, t->len);
+        t = t->next;
+        if(!t)
+            break;
+    }
 
     program();
 

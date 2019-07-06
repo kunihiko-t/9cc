@@ -112,7 +112,6 @@ Node *unary() {
 
 
 Node *term() {
-
     Token *tok = consume_ident();
     if (tok) {
         Node *node = calloc(1, sizeof(Node));
@@ -126,10 +125,12 @@ Node *term() {
             lvar->next = locals;
             lvar->name = tok->str;
             lvar->len = tok->len;
+            fprintf(stderr, "*** len:%d, str:%s \n", tok->len, tok->str);
             lvar->offset = locals->offset + 8;
             node->offset = lvar->offset;
             locals = lvar;
         }
+
         return node;
     }
 
@@ -159,7 +160,7 @@ Token *consume_ident() {
     if (token->kind != TK_IDENT) {
         return NULL;
     }
-    Token* current = token;
+    Token *current = token;
     token = token->next;
     return current;
 }
@@ -199,11 +200,14 @@ Token *new_token(TokenKind kind, Token *cur, char *str) {
             )
             ) {
         tok->len = 2;
-        tok->str = (char*)calloc(1,2);
+        tok->str = (char *) calloc(1, 2);
         strncpy(tok->str, str, 2);
+    } else if (kind == TK_IDENT) {
+        tok->len = strlen(str);
+        tok->str = str;
     } else {
         tok->len = 1;
-        tok->str = (char*)calloc(1,1);
+        tok->str = (char *) calloc(1, 1);
         strncpy(tok->str, str, 1);
     }
     cur->next = tok;
@@ -236,10 +240,24 @@ void tokenize(char *p) {
             continue;
         }
 
-        // １文字ローカル変数
+        // ローカル変数
         if ('a' <= *p && *p <= 'z') {
-            cur = new_token(TK_IDENT, cur, p++);
-            cur->len = 1;
+            int len = 1;
+            char *start = p;
+            for (;;) {
+                p++;
+                if ('a' <= *p && *p <= 'z') {
+                    len++;
+                } else {
+                    break;
+                }
+            }
+            char dst[len + 1];
+            //TODO このへんノード構築時にstrの値が変わってるので修正する
+            strncpy(dst, start, len);
+            dst[len] = '\0';
+            fprintf(stderr, "start: %s-- dst:%s\n", start, dst);
+            cur = new_token(TK_IDENT, cur, dst);
             continue;
         }
 

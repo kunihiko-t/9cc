@@ -45,7 +45,7 @@ try 1 "3 > 2;"
 try 0 "2 > 3;"
 try 0 "3 > 3;"
 try 1 "(3*10) > (3*9);"
-try 10 "a = 10 ;"
+try 10 "ab = 10 ;"
 try 20 "b = 10 * 2;"
 try 1 "foo = 1;"
 echo OK

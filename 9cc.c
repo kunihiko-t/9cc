@@ -11,15 +11,15 @@ int main(int argc, char **argv) {
     locals = calloc(1, sizeof(LVar));
     // トークナイズしてパースする
     user_input = argv[1];
-    fprintf(stderr, "input: %s \n", user_input);
+//    fprintf(stderr, "input: %s \n", user_input);
     tokenize(user_input);
-    Token* t = token;
-    for(;;){
-        fprintf(stderr, "tokenized:: %s, %d \n", t->str, t->len);
-        t = t->next;
-        if(!t)
-            break;
-    }
+//    Token* t = token;
+//    for(;;){
+//        fprintf(stderr, "tokenized:: %s, %d \n", t->str, t->len);
+//        t = t->next;
+//        if(!t)
+//            break;
+//    }
 
     program();
 

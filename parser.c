@@ -125,7 +125,6 @@ Node *term() {
             lvar->next = locals;
             lvar->name = tok->str;
             lvar->len = tok->len;
-            fprintf(stderr, "*** len:%d, str:%s \n", tok->len, tok->str);
             lvar->offset = locals->offset + 8;
             node->offset = lvar->offset;
             locals = lvar;
@@ -252,11 +251,9 @@ void tokenize(char *p) {
                     break;
                 }
             }
-            char dst[len + 1];
-            //TODO このへんノード構築時にstrの値が変わってるので修正する
+            char *dst = (char *) malloc(sizeof(char) * sizeof(len));
             strncpy(dst, start, len);
             dst[len] = '\0';
-            fprintf(stderr, "start: %s-- dst:%s\n", start, dst);
             cur = new_token(TK_IDENT, cur, dst);
             continue;
         }

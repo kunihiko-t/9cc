@@ -35,7 +35,14 @@ Node *expr() {
 }
 
 Node *stmt() {
-    Node *node = expr();
+    Node *node;
+    if (consume_return()) {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_RETURN;
+        node->lhs = expr();
+    } else {
+        node = expr();
+    }
     expect(";");
     return node;
 }
@@ -154,6 +161,13 @@ bool consume(char *op) {
     return true;
 }
 
+bool consume_return(){
+    if (token->kind != TK_RETURN){
+        return false;
+    }
+    token = token->next;
+    return true;
+}
 
 Token *consume_ident() {
     if (token->kind != TK_IDENT) {
@@ -204,6 +218,9 @@ Token *new_token(TokenKind kind, Token *cur, char *str) {
     } else if (kind == TK_IDENT) {
         tok->len = strlen(str);
         tok->str = str;
+    } else if(kind == TK_RETURN){
+        tok->len = 5;
+        tok->str = str;
     } else {
         tok->len = 1;
         tok->str = (char *) calloc(1, 1);
@@ -220,11 +237,14 @@ void tokenize(char *p) {
     head.next = NULL;
     Token *cur = &head;
     while (*p) {
+
         // 空白文字をスキップ
         if (isspace(*p)) {
             p++;
             continue;
         }
+
+        // 予約語判定
         if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '<' || *p == '>' ||
             *p == '=' || *p == '!' || *p == ';') {
             cur = new_token(TK_RESERVED, cur, p++);
@@ -233,11 +253,21 @@ void tokenize(char *p) {
             }
             continue;
         }
+
+        // 数値判定
         if (isdigit(*p)) {
             cur = new_token(TK_NUM, cur, p);
             cur->val = strtol(p, &p, 10);
             continue;
         }
+
+        // returnの判定
+        if (strncmp(p, "return", 6) == 0 && !is_alnum(p[6])) {
+            cur = new_token(TK_RETURN, cur, "return");
+            p += 6;
+            continue;
+        }
+
 
         // ローカル変数
         if ('a' <= *p && *p <= 'z') {
@@ -258,6 +288,7 @@ void tokenize(char *p) {
             continue;
         }
 
+
         error("トークナイズできません");
     }
     new_token(TK_EOF, cur, p);
@@ -271,4 +302,11 @@ LVar *find_lvar(Token *tok) {
         if (var->len == tok->len && !memcmp(tok->str, var->name, var->len))
             return var;
     return NULL;
+}
+
+int is_alnum(char c) {
+    return ('a' <= c && c <= 'z') ||
+           ('A' <= c && c <= 'Z') ||
+           ('0' <= c && c <= '9') ||
+           (c == '_');
 }

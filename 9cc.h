@@ -36,6 +36,7 @@ typedef enum {
     ND_NUM, // 整数
     ND_ASSIGN, // =
     ND_LVAR,   // ローカル変数
+    ND_RETURN,
 } NodeKind;
 
 
@@ -45,6 +46,7 @@ typedef enum {
     TK_IDENT,    // 識別子
     TK_NUM,      // 整数トークン
     TK_EOF,      // 入力の終わりを表すトークン
+    TK_RETURN,
 } TokenKind;
 
 typedef struct Node Node;
@@ -62,8 +64,8 @@ struct Node {
 extern Node *code[100];
 
 
-//program    = stmt*
-//stmt       = expr ";"
+//program = stmt*
+//stmt    = expr ";"　| "return" expr ";"
 //expr       = assign
 //assign     = equality ("=" assign)?
 //equality   = relational ("==" relational | "!=" relational)*
@@ -125,6 +127,8 @@ bool consume(char *op);
 
 Token *consume_ident();
 
+bool consume_return();
+
 extern Token *token;
 
 void error(char *fmt, ...);
@@ -135,3 +139,4 @@ Token *new_token(TokenKind kind, Token *cur, char *str);
 
 void tokenize(char *p);
 
+int is_alnum(char c);

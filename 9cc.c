@@ -13,15 +13,16 @@ int main(int argc, char **argv) {
     user_input = argv[1];
 //    fprintf(stderr, "input: %s \n", user_input);
     tokenize(user_input);
-//    Token* t = token;
+    Token* t = token;
 //    for(;;){
-//        fprintf(stderr, "tokenized:: %s, %d \n", t->str, t->len);
+//        fprintf(stderr, "tokenized:: str:%s, len:%d, kind:%d \n", t->str, t->len, t->kind);
 //        t = t->next;
 //        if(!t)
 //            break;
 //    }
 
     program();
+
 
     // アセンブリの前半部分を出力
     printf(".intel_syntax noprefix\n");

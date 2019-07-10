@@ -48,4 +48,10 @@ try 1 "(3*10) > (3*9);"
 try 10 "ab = 10 ;"
 try 20 "b = 10 * 2;"
 try 1 "foo = 1;"
+try 2 "return 2;"
+try 6 "foo = 3; bar=2; return foo * bar;"
+try 14 "a = 3;
+b = 5 * 6 - 8;
+return a + b / 2;"
 echo OK
+

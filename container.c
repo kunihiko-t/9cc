@@ -28,7 +28,6 @@ void error(char *fmt, ...) {
     exit(1);
 }
 
-
 bool at_eof() {
     return token->kind == TK_EOF;
 }

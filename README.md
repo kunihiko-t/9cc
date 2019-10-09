@@ -2,7 +2,7 @@
 
 WIP
 
-ステップ11：return文 あたりまで
+if文まで
 
 ## Build
 
@@ -20,6 +20,9 @@ make test
 ```
 program    = stmt*
 stmt       = expr ";"
+           | "if" "(" expr ")" stmt ("else" stmt)?
+           | "while" "(" expr ")" stmt
+           | "for" "(" expr? ";" expr? ";" expr? ")" stmt
            | "return" expr ";"
 expr       = assign
 assign     = equality ("=" assign)?

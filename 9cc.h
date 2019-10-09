@@ -37,6 +37,9 @@ typedef enum {
     ND_ASSIGN, // =
     ND_LVAR,   // ローカル変数
     ND_RETURN,
+    ND_IF,
+    ND_WHILE,
+    ND_FOR,
 } NodeKind;
 
 
@@ -47,6 +50,10 @@ typedef enum {
     TK_NUM,      // 整数トークン
     TK_EOF,      // 入力の終わりを表すトークン
     TK_RETURN,
+    TK_IF,
+    TK_ELSE,
+    TK_FOR,
+    TK_WHILE
 } TokenKind;
 
 typedef struct Node Node;
@@ -57,23 +64,14 @@ struct Node {
     NodeKind kind; // ノードの型
     Node *lhs;     // 左辺
     Node *rhs;     // 右辺
+    Node *cond;     // 条件
+    Node *then;     // condがtrueのとき
+    Node *els;     // condがfalseのとき
     int val;       // kindがND_NUMの場合のみ使う
     int offset;    // kindがND_LVARの場合のみ使う
 };
 
 extern Node *code[100];
-
-
-//program = stmt*
-//stmt    = expr ";"　| "return" expr ";"
-//expr       = assign
-//assign     = equality ("=" assign)?
-//equality   = relational ("==" relational | "!=" relational)*
-//relational = add ("<" add | "<=" add | ">" add | ">=" add)*
-//add        = mul ("+" mul | "-" mul)*
-//mul        = unary ("*" unary | "/" unary)*
-//unary      = ("+" | "-")? term
-//term       = num | ident | "(" expr ")"
 
 void program();
 
@@ -128,6 +126,14 @@ bool consume(char *op);
 Token *consume_ident();
 
 bool consume_return();
+
+bool consume_if();
+
+bool consume_else();
+
+bool consume_while();
+
+bool consume_for();
 
 extern Token *token;
 

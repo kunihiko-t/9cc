@@ -53,5 +53,7 @@ try 6 "foo = 3; bar=2; return foo * bar;"
 try 14 "a = 3;
 b = 5 * 6 - 8;
 return a + b / 2;"
+try 1 "if(1 == 1) 1; else 2;"
+try 1 "a = 1; if(1 != 1) a = 2; a;"
 echo OK
 

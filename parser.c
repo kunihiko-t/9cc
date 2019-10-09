@@ -40,6 +40,18 @@ Node *stmt() {
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
         node->lhs = expr();
+    } else if(consume_if()){
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_IF;
+        if (consume("(")) {
+            node->cond = expr();
+            expect(")");
+            node->then = stmt();
+            if(consume_else()){
+                node->els = stmt();
+            }
+        }
+        return node;
     } else {
         node = expr();
     }
@@ -169,6 +181,23 @@ bool consume_return(){
     return true;
 }
 
+bool consume_if(){
+    if (token->kind != TK_IF){
+        return false;
+    }
+    token = token->next;
+    return true;
+}
+
+bool consume_else(){
+    if (token->kind != TK_ELSE){
+        return false;
+    }
+    token = token->next;
+    return true;
+}
+
+
 Token *consume_ident() {
     if (token->kind != TK_IDENT) {
         return NULL;
@@ -185,7 +214,7 @@ void expect(char *op) {
     if (token->kind != TK_RESERVED ||
         strlen(op) != token->len ||
         memcmp(token->str, op, token->len) != 0)
-        error("'%c'ではありません", op);
+        error("'%s'ではありません", op);
     token = token->next;
 }
 
@@ -268,6 +297,19 @@ void tokenize(char *p) {
             continue;
         }
 
+        // ifの判定
+        if (strncmp(p, "if", 2) == 0 && !is_alnum(p[2])) {
+            cur = new_token(TK_IF, cur, "if");
+            p += 2;
+            continue;
+        }
+
+        // elseの判定
+        if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4])) {
+            cur = new_token(TK_ELSE, cur, "else");
+            p += 4;
+            continue;
+        }
 
         // ローカル変数
         if ('a' <= *p && *p <= 'z') {

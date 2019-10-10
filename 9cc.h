@@ -67,6 +67,8 @@ struct Node {
     Node *cond;     // 条件
     Node *then;     // condがtrueのとき
     Node *els;     // condがfalseのとき
+    Node *init;     // for文の初期化処理
+    Node *step;     // for文のstep
     int val;       // kindがND_NUMの場合のみ使う
     int offset;    // kindがND_LVARの場合のみ使う
 };

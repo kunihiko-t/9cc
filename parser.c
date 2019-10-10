@@ -61,6 +61,22 @@ Node *stmt() {
         return  node;
     }
 
+    if(consume_for()){
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_FOR;
+        if (consume("(")) {
+            node->init = expr();
+            expect(";");
+            node->cond = expr();
+            expect(";");
+            node->step = expr();
+            expect(")");
+            node->lhs = stmt();
+        }
+        return  node;
+    }
+
+
     if (consume_return()) {
         node = calloc(1, sizeof(Node));
         node->kind = ND_RETURN;
@@ -286,6 +302,9 @@ Token *new_token(TokenKind kind, Token *cur, char *str) {
     } else if(kind == TK_WHILE){
         tok->len = 5;
         tok->str = str;
+    } else if(kind == TK_FOR){
+        tok->len = 3;
+        tok->str = str;
     } else {
         tok->len = 1;
         tok->str = (char *) calloc(1, 1);
@@ -351,6 +370,13 @@ void tokenize(char *p) {
         if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5])) {
             cur = new_token(TK_WHILE, cur, "while");
             p += 5;
+            continue;
+        }
+
+        // forの判定
+        if (strncmp(p, "for", 3) == 0 && !is_alnum(p[3])) {
+            cur = new_token(TK_FOR, cur, "for");
+            p += 3;
             continue;
         }
 

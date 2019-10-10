@@ -56,6 +56,6 @@ return a + b / 2;"
 try 1 "if(1 == 1) 1; else 2;"
 try 1 "a = 1; if(1 != 1) a = 2; a;"
 try 10 "a = 0; while(a < 10) a = a + 1; a;"
-
+try 10 "b = 0; for(a = 0;a < 10;a=a+1) b = b + 1; b;"
 echo OK
 

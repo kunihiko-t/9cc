@@ -2,7 +2,7 @@
 
 WIP
 
-if文まで
+for文まで
 
 ## Build
 

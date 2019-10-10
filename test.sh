@@ -55,5 +55,7 @@ b = 5 * 6 - 8;
 return a + b / 2;"
 try 1 "if(1 == 1) 1; else 2;"
 try 1 "a = 1; if(1 != 1) a = 2; a;"
+try 10 "a = 0; while(a < 10) a = a + 1; a;"
+
 echo OK
 

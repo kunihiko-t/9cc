@@ -43,6 +43,19 @@ void gen(Node *node) {
         return;
     }
 
+    if(node->kind == ND_WHILE){
+        printf(".LbeginXXX:\n");
+        gen(node->cond);
+        printf("  pop rax\n");
+        printf("  cmp rax, 0\n");
+        printf("  je  .LendXXX\n");
+        gen(node->lhs);
+        printf("  jmp .LbeginXXX\n");
+        printf(".LendXXX:\n");
+        return;
+    }
+
+
     switch (node->kind) {
         case ND_NUM:
             printf("  push %d\n", node->val);

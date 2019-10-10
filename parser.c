@@ -36,11 +36,7 @@ Node *expr() {
 
 Node *stmt() {
     Node *node;
-    if (consume_return()) {
-        node = calloc(1, sizeof(Node));
-        node->kind = ND_RETURN;
-        node->lhs = expr();
-    } else if(consume_if()){
+    if(consume_if()){
         node = calloc(1, sizeof(Node));
         node->kind = ND_IF;
         if (consume("(")) {
@@ -52,6 +48,23 @@ Node *stmt() {
             }
         }
         return node;
+    }
+
+    if(consume_while()){
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_WHILE;
+        if (consume("(")) {
+            node->cond = expr();
+            expect(")");
+            node->lhs = stmt();
+        }
+        return  node;
+    }
+
+    if (consume_return()) {
+        node = calloc(1, sizeof(Node));
+        node->kind = ND_RETURN;
+        node->lhs = expr();
     } else {
         node = expr();
     }
@@ -198,6 +211,23 @@ bool consume_else(){
 }
 
 
+bool consume_for(){
+    if (token->kind != TK_FOR){
+        return false;
+    }
+    token = token->next;
+    return true;
+}
+
+bool consume_while(){
+    if (token->kind != TK_WHILE){
+        return false;
+    }
+    token = token->next;
+    return true;
+}
+
+
 Token *consume_ident() {
     if (token->kind != TK_IDENT) {
         return NULL;
@@ -248,6 +278,12 @@ Token *new_token(TokenKind kind, Token *cur, char *str) {
         tok->len = strlen(str);
         tok->str = str;
     } else if(kind == TK_RETURN){
+        tok->len = 5;
+        tok->str = str;
+    } else if(kind == TK_IF){
+        tok->len = 2;
+        tok->str = str;
+    } else if(kind == TK_WHILE){
         tok->len = 5;
         tok->str = str;
     } else {
@@ -308,6 +344,13 @@ void tokenize(char *p) {
         if (strncmp(p, "else", 4) == 0 && !is_alnum(p[4])) {
             cur = new_token(TK_ELSE, cur, "else");
             p += 4;
+            continue;
+        }
+
+        // whileの判定
+        if (strncmp(p, "while", 5) == 0 && !is_alnum(p[5])) {
+            cur = new_token(TK_WHILE, cur, "while");
+            p += 5;
             continue;
         }
 

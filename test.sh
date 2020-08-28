@@ -1,4 +1,5 @@
 #!/bin/bash
+
 try() {
   expected="$1"
   input="$2"
@@ -57,5 +58,8 @@ try 1 "if(1 == 1) 1; else 2;"
 try 1 "a = 1; if(1 != 1) a = 2; a;"
 try 10 "a = 0; while(a < 10) a = a + 1; a;"
 try 10 "b = 0; for(a = 0;a < 10;a=a+1) b = b + 1; b;"
+try 1 "if(1 == 1){ 1;} else {2;}"
+try 55 "i=0; j=0; while(i<=10) {j=i+j; i=i+1;} return j;"
+try 3 "{1; {2;} return 3;}"
 echo OK
 

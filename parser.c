@@ -36,21 +36,36 @@ Node *expr() {
 
 Node *stmt() {
     Node *node;
-    if(consume_if()){
+
+    if (consume("{")) {
+        Node head = {};
+        Node *cur = &head;
+
+        while (!consume("}")) {
+            cur->next = stmt();
+            cur = cur->next;
+        }
+
+        Node *node = new_node(ND_BLOCK, NULL, NULL);
+        node->body = head.next;
+        return node;
+    }
+
+    if (consume_if()) {
         node = calloc(1, sizeof(Node));
         node->kind = ND_IF;
         if (consume("(")) {
             node->cond = expr();
             expect(")");
             node->then = stmt();
-            if(consume_else()){
+            if (consume_else()) {
                 node->els = stmt();
             }
         }
         return node;
     }
 
-    if(consume_while()){
+    if (consume_while()) {
         node = calloc(1, sizeof(Node));
         node->kind = ND_WHILE;
         if (consume("(")) {
@@ -58,10 +73,10 @@ Node *stmt() {
             expect(")");
             node->lhs = stmt();
         }
-        return  node;
+        return node;
     }
 
-    if(consume_for()){
+    if (consume_for()) {
         node = calloc(1, sizeof(Node));
         node->kind = ND_FOR;
         if (consume("(")) {
@@ -73,7 +88,7 @@ Node *stmt() {
             expect(")");
             node->lhs = stmt();
         }
-        return  node;
+        return node;
     }
 
 
@@ -202,24 +217,24 @@ bool consume(char *op) {
     return true;
 }
 
-bool consume_return(){
-    if (token->kind != TK_RETURN){
+bool consume_return() {
+    if (token->kind != TK_RETURN) {
         return false;
     }
     token = token->next;
     return true;
 }
 
-bool consume_if(){
-    if (token->kind != TK_IF){
+bool consume_if() {
+    if (token->kind != TK_IF) {
         return false;
     }
     token = token->next;
     return true;
 }
 
-bool consume_else(){
-    if (token->kind != TK_ELSE){
+bool consume_else() {
+    if (token->kind != TK_ELSE) {
         return false;
     }
     token = token->next;
@@ -227,16 +242,16 @@ bool consume_else(){
 }
 
 
-bool consume_for(){
-    if (token->kind != TK_FOR){
+bool consume_for() {
+    if (token->kind != TK_FOR) {
         return false;
     }
     token = token->next;
     return true;
 }
 
-bool consume_while(){
-    if (token->kind != TK_WHILE){
+bool consume_while() {
+    if (token->kind != TK_WHILE) {
         return false;
     }
     token = token->next;
@@ -293,16 +308,16 @@ Token *new_token(TokenKind kind, Token *cur, char *str) {
     } else if (kind == TK_IDENT) {
         tok->len = strlen(str);
         tok->str = str;
-    } else if(kind == TK_RETURN){
+    } else if (kind == TK_RETURN) {
         tok->len = 5;
         tok->str = str;
-    } else if(kind == TK_IF){
+    } else if (kind == TK_IF) {
         tok->len = 2;
         tok->str = str;
-    } else if(kind == TK_WHILE){
+    } else if (kind == TK_WHILE) {
         tok->len = 5;
         tok->str = str;
-    } else if(kind == TK_FOR){
+    } else if (kind == TK_FOR) {
         tok->len = 3;
         tok->str = str;
     } else {
@@ -330,7 +345,7 @@ void tokenize(char *p) {
 
         // 予約語判定
         if (*p == '+' || *p == '-' || *p == '*' || *p == '/' || *p == ')' || *p == '(' || *p == '<' || *p == '>' ||
-            *p == '=' || *p == '!' || *p == ';') {
+            *p == '=' || *p == '!' || *p == ';' || *p == '{' || *p == '}') {
             cur = new_token(TK_RESERVED, cur, p++);
             if (cur->len == 2) {
                 p++;

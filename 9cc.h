@@ -40,6 +40,7 @@ typedef enum {
     ND_IF,
     ND_WHILE,
     ND_FOR,
+    ND_BLOCK,
 } NodeKind;
 
 
@@ -69,6 +70,8 @@ struct Node {
     Node *els;     // condがfalseのとき
     Node *init;     // for文の初期化処理
     Node *step;     // for文のstep
+    Node *body;
+    Node *next;
     int val;       // kindがND_NUMの場合のみ使う
     int offset;    // kindがND_LVARの場合のみ使う
 };
